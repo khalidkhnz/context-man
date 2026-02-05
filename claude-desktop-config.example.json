@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "context-man": {
+      "command": "npx",
+      "args": ["tsx", "E:/Files/context-man/src/bin/context-man.ts", "serve", "mcp"],
+      "env": {
+        "MONGODB_URI": "mongodb://localhost:27017/context-man"
+      }
+    }
+  }
+}
