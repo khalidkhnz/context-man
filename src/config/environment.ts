@@ -10,11 +10,11 @@ const envSchema = z.object({
   MONGODB_URI: z.string().default('mongodb://localhost:27017/context-man'),
 
   // API Server
-  API_PORT: z.coerce.number().default(3000),
+  API_PORT: z.coerce.number().default(7777),
   API_HOST: z.string().default('localhost'),
 
   // MCP Server
-  MCP_HTTP_PORT: z.coerce.number().default(3001),
+  MCP_HTTP_PORT: z.coerce.number().default(7778),
   MCP_TRANSPORT: z.enum(['stdio', 'http', 'both']).default('stdio'),
 
   // Logging

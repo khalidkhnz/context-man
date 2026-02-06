@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # MongoDB database
+  mongodb:
+    image: mongo:7
+    container_name: context-man-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      # Uncomment to enable authentication
+      # MONGO_INITDB_ROOT_USERNAME: admin
+      # MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: context-man
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/context-man --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # Context Manager API (optional - uncomment to run in container)
+  # api:
+  #   build: .
+  #   container_name: context-man-api
+  #   restart: unless-stopped
+  #   ports:
+  #     - "7777:7777"
+  #   environment:
+  #     NODE_ENV: production
+  #     MONGODB_URI: mongodb://mongodb:27017/context-man
+  #     API_PORT: 7777
+  #     API_HOST: 0.0.0.0
+  #     LOG_LEVEL: info
+  #   depends_on:
+  #     mongodb:
+  #       condition: service_healthy
+  #   command: ["node", "dist/bin/context-man.js", "serve", "api"]
+
+  # MongoDB Express (optional - web UI for MongoDB)
+  # mongo-express:
+  #   image: mongo-express
+  #   container_name: context-man-mongo-express
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8081:8081"
+  #   environment:
+  #     ME_CONFIG_MONGODB_SERVER: mongodb
+  #     ME_CONFIG_BASICAUTH_USERNAME: admin
+  #     ME_CONFIG_BASICAUTH_PASSWORD: admin
+  #   depends_on:
+  #     mongodb:
+  #       condition: service_healthy
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  default:
+    name: context-man-network

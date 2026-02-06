@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run cli:*)",
+      "Bash(npx tsx:*)",
+      "Bash(ping:*)",
+      "Bash(set NODE_ENV=development)",
+      "Bash(mongosh:*)",
+      "Bash(mongo --quiet --eval \"db.code_snippets.dropIndexes\\(\\)\" mongodb://localhost:27017/context-man)",
+      "Bash(del:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)"
+    ]
+  }
+}

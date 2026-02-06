@@ -4,3 +4,4 @@ export { skillService, SkillService } from './skill.service.js';
 export { codeSnippetService, CodeSnippetService } from './code-snippet.service.js';
 export { promptTemplateService, PromptTemplateService } from './prompt-template.service.js';
 export { searchService, SearchService } from './search.service.js';
+export { todoService, TodoService } from './todo.service.js';

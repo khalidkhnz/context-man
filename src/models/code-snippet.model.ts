@@ -76,9 +76,10 @@ const CodeSnippetSchema = new Schema<ICodeSnippetModel>(
 CodeSnippetSchema.index({ projectId: 1, name: 1 }, { unique: true });
 
 // Text index for search
+// Use language_override to avoid conflict with our 'language' field (programming language)
 CodeSnippetSchema.index(
   { name: 'text', description: 'text', tags: 'text' },
-  { weights: { name: 10, description: 5, tags: 3 } }
+  { weights: { name: 10, description: 5, tags: 3 }, language_override: 'textSearchLanguage' }
 );
 
 export const CodeSnippet: Model<ICodeSnippetModel> = mongoose.model<ICodeSnippetModel>(

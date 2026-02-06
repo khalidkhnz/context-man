@@ -15,6 +15,8 @@
     "serve:mcp": "tsx src/bin/context-man.ts serve mcp",
     "serve:api": "tsx src/bin/context-man.ts serve api",
     "serve:all": "tsx src/bin/context-man.ts serve --all",
+    "seed": "tsx src/seed/index.ts",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",

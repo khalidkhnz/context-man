@@ -6,6 +6,7 @@ import { createGetCommand } from './commands/get.command.js';
 import { createDeleteCommand } from './commands/delete.command.js';
 import { createSearchCommand } from './commands/search.command.js';
 import { createServeCommand } from './commands/serve.command.js';
+import { registerTodoCommands } from './commands/todo.commands.js';
 
 export function createCli(): Command {
   const program = new Command();
@@ -23,6 +24,9 @@ export function createCli(): Command {
   program.addCommand(createDeleteCommand());
   program.addCommand(createSearchCommand());
   program.addCommand(createServeCommand());
+
+  // Register todo commands directly on program
+  registerTodoCommands(program);
 
   return program;
 }
