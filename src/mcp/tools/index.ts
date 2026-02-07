@@ -19,6 +19,10 @@ export { browseTechstacksTool, browseTechstacks } from './browse-techstacks.tool
 export { initProjectFromTechstackTool, initProjectFromTechstack } from './init-project-from-techstack.tool.js';
 export { initExistingProjectTool, initExistingProject } from './init-existing-project.tool.js';
 
+// Document management tools
+export { addDocumentTool, addDocument } from './add-document.tool.js';
+export { updateDocumentTool, updateDocument } from './update-document.tool.js';
+
 // Catalog browsing tools
 export { listTemplatesTool, listTemplates } from './browse-catalog.tool.js';
 export { browseAllSkillsTool, browseAllSkills } from './browse-all-skills.tool.js';
@@ -46,4 +50,6 @@ export const allTools = [
   'browse_all_skills',
   'get_skill_content',
   'get_techstack_content',
+  'add_document',
+  'update_document',
 ] as const;

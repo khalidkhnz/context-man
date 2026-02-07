@@ -15,6 +15,8 @@ import {
   browseAllSkills,
   getSkillContent,
   getTechstackContent,
+  addDocument,
+  updateDocument,
 } from './tools/index.js';
 import { todoService } from '../services/index.js';
 
@@ -348,6 +350,7 @@ export function createMcpServer(): McpServer {
     'Create a new todo item with optional initial Q&A from requirements gathering',
     {
       projectSlug: z.string().describe('The project slug'),
+      username: z.string().describe('Username of the person creating this todo'),
       title: z.string().describe('The todo title'),
       description: z.string().optional().describe('Detailed description'),
       priority: z
@@ -381,6 +384,7 @@ export function createMcpServer(): McpServer {
             ...qa,
             askedAt: new Date(),
           })),
+          username: args.username,
         });
         if (!todo) {
           return {
@@ -423,6 +427,7 @@ export function createMcpServer(): McpServer {
     'Update a todo item - can change status, priority, title, description, or mark as completed',
     {
       todoId: z.string().describe('The todo ID'),
+      username: z.string().describe('Username of the person making this update'),
       title: z.string().optional().describe('New title'),
       description: z.string().optional().describe('New description'),
       status: z
@@ -483,6 +488,7 @@ export function createMcpServer(): McpServer {
     'Add a question and answer pair to a todo - useful for tracking decisions made during implementation',
     {
       todoId: z.string().describe('The todo ID'),
+      username: z.string().describe('Username of the person adding this Q&A'),
       question: z.string().describe('The question that was asked'),
       answer: z.string().describe('The answer that was given'),
       context: z
@@ -496,6 +502,7 @@ export function createMcpServer(): McpServer {
           question: args.question,
           answer: args.answer,
           context: args.context,
+          username: args.username,
         });
         if (!todo) {
           return {
@@ -609,6 +616,7 @@ export function createMcpServer(): McpServer {
     'init_project_from_techstack',
     'Initialize a new project using techstack and optionally other documents/skills from an existing project',
     {
+      username: z.string().describe('Username of the person initializing this project'),
       newProjectSlug: z.string().describe('Slug for the new project'),
       newProjectName: z.string().describe('Name for the new project'),
       newProjectDescription: z.string().optional().describe('Description for the new project'),
@@ -630,6 +638,7 @@ export function createMcpServer(): McpServer {
           copyDocuments: args.copyDocuments,
           copySkills: args.copySkills ?? false,
           tags: args.tags,
+          username: args.username,
         });
         if ('error' in result && result.error) {
           return {
@@ -654,6 +663,7 @@ export function createMcpServer(): McpServer {
     'init_existing_project',
     'Initialize an existing project into context-man by scanning for documentation files',
     {
+      username: z.string().describe('Username of the person initializing this project'),
       projectSlug: z.string().describe('Slug for the project in context-man'),
       projectName: z.string().describe('Display name for the project'),
       projectDescription: z.string().optional().describe('Description of the project'),
@@ -680,6 +690,7 @@ export function createMcpServer(): McpServer {
           tags: args.tags,
           scanForDocs: args.scanForDocs ?? true,
           customDocs: args.customDocs,
+          username: args.username,
         });
         if ('error' in result && result.error) {
           return {
@@ -820,6 +831,94 @@ export function createMcpServer(): McpServer {
           projectSlug: args.projectSlug,
         });
         if (result.error) {
+          return {
+            content: [{ type: 'text', text: result.error }],
+            isError: true,
+          };
+        }
+        return {
+          content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+        };
+      } catch (error) {
+        return {
+          content: [{ type: 'text', text: `Error: ${(error as Error).message}` }],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  // Register add_document tool
+  server.tool(
+    'add_document',
+    'Add a new document to an existing project. Fails if document type already exists — use update_document instead.',
+    {
+      projectSlug: z.string().describe('The project slug to add the document to'),
+      username: z.string().describe('Username of the person adding this document'),
+      type: z
+        .enum(['PLAN', 'TODO', 'SCOPE', 'TECHSTACK', 'UI_UX_STANDARDS', 'CODING_GUIDELINES'])
+        .describe('Document type'),
+      title: z.string().describe('Document title'),
+      content: z.string().describe('Document content (markdown)'),
+      tags: z.array(z.string()).optional().describe('Tags for categorization'),
+      changeNote: z.string().optional().describe('Note about this document creation'),
+    },
+    async (args) => {
+      try {
+        const result = await addDocument({
+          projectSlug: args.projectSlug,
+          username: args.username,
+          type: args.type,
+          title: args.title,
+          content: args.content,
+          tags: args.tags,
+          changeNote: args.changeNote,
+        });
+        if ('error' in result && result.error) {
+          return {
+            content: [{ type: 'text', text: result.error }],
+            isError: true,
+          };
+        }
+        return {
+          content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+        };
+      } catch (error) {
+        return {
+          content: [{ type: 'text', text: `Error: ${(error as Error).message}` }],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  // Register update_document tool
+  server.tool(
+    'update_document',
+    'Update an existing document in a project. Creates a new version. Fails if document doesn\'t exist — use add_document first.',
+    {
+      projectSlug: z.string().describe('The project slug'),
+      username: z.string().describe('Username of the person updating this document'),
+      type: z
+        .enum(['PLAN', 'TODO', 'SCOPE', 'TECHSTACK', 'UI_UX_STANDARDS', 'CODING_GUIDELINES'])
+        .describe('Document type to update'),
+      title: z.string().optional().describe('New document title'),
+      content: z.string().optional().describe('New document content (markdown)'),
+      tags: z.array(z.string()).optional().describe('New tags'),
+      changeNote: z.string().optional().describe('Note about what changed in this update'),
+    },
+    async (args) => {
+      try {
+        const result = await updateDocument({
+          projectSlug: args.projectSlug,
+          username: args.username,
+          type: args.type,
+          title: args.title,
+          content: args.content,
+          tags: args.tags,
+          changeNote: args.changeNote,
+        });
+        if ('error' in result && result.error) {
           return {
             content: [{ type: 'text', text: result.error }],
             isError: true,

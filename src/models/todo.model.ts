@@ -19,6 +19,8 @@ export interface ITodoModel extends Document {
   questionsAnswers: ITodoQA[];
   currentVersion: number;
   versions: ITodoVersion[];
+  authors: string[];
+  lastAuthor: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -41,6 +43,7 @@ const TodoVersionSchema = new Schema<ITodoVersion>(
     status: { type: String, required: true },
     changedAt: { type: Date, default: Date.now },
     changeNote: { type: String },
+    author: { type: String },
   },
   { _id: false }
 );
@@ -101,6 +104,14 @@ const TodoSchema = new Schema<ITodoModel>(
     versions: {
       type: [TodoVersionSchema],
       default: [],
+    },
+    authors: {
+      type: [String],
+      default: [],
+    },
+    lastAuthor: {
+      type: String,
+      default: '',
     },
   },
   {

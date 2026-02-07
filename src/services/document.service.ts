@@ -29,11 +29,24 @@ export class DocumentService {
           content: input.content,
           changedAt: new Date(),
           changeNote: input.changeNote || 'Initial version',
+          author: input.username,
         },
       ],
+      authors: input.username ? [input.username] : [],
+      lastAuthor: input.username || '',
     });
 
-    return doc.save();
+    const saved = await doc.save();
+
+    // Track author at project level
+    if (input.username) {
+      await Project.findOneAndUpdate(
+        { slug: projectSlug.toLowerCase() },
+        { $addToSet: { authors: input.username }, $set: { lastAuthor: input.username } }
+      );
+    }
+
+    return saved;
   }
 
   async findByProjectAndType(
@@ -75,6 +88,7 @@ export class DocumentService {
         content: doc.content,
         changedAt: new Date(),
         changeNote: input.changeNote,
+        author: input.username,
       });
       doc.currentVersion += 1;
       doc.content = input.content;
@@ -83,7 +97,25 @@ export class DocumentService {
     if (input.title !== undefined) doc.title = input.title;
     if (input.tags !== undefined) doc.tags = input.tags;
 
-    return doc.save();
+    // Track author on document
+    if (input.username) {
+      if (!doc.authors.includes(input.username)) {
+        doc.authors.push(input.username);
+      }
+      doc.lastAuthor = input.username;
+    }
+
+    const saved = await doc.save();
+
+    // Track author at project level
+    if (input.username) {
+      await Project.findOneAndUpdate(
+        { slug: projectSlug.toLowerCase() },
+        { $addToSet: { authors: input.username }, $set: { lastAuthor: input.username } }
+      );
+    }
+
+    return saved;
   }
 
   async delete(projectSlug: string, type: DocumentType): Promise<boolean> {

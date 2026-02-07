@@ -3,6 +3,7 @@ import { projectService, documentService, skillService } from '../../services/in
 import { DocumentType } from '../../types/document.types.js';
 
 export const initProjectFromTechstackSchema = z.object({
+  username: z.string().optional().describe('Username of the person initializing this project'),
   newProjectSlug: z.string().describe('Slug for the new project'),
   newProjectName: z.string().describe('Name for the new project'),
   newProjectDescription: z.string().optional().describe('Description for the new project'),
@@ -38,6 +39,7 @@ export async function initProjectFromTechstack(input: InitProjectFromTechstackIn
     description: input.newProjectDescription || `Initialized from ${sourceProject.name}`,
     tags: input.tags || sourceProject.tags,
     isTemplate: false,
+    username: input.username,
   });
 
   if (!newProject) {
@@ -64,6 +66,7 @@ export async function initProjectFromTechstack(input: InitProjectFromTechstackIn
         content: sourceDoc.content,
         tags: sourceDoc.tags || [],
         changeNote: `Copied from ${input.sourceProjectSlug}`,
+        username: input.username,
       });
       copiedItems.documents.push(docTypeStr);
     }

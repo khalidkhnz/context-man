@@ -5,6 +5,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 
 export const initExistingProjectSchema = z.object({
+  username: z.string().optional().describe('Username of the person initializing this project'),
   projectSlug: z.string().describe('Slug for the project in context-man'),
   projectName: z.string().describe('Display name for the project'),
   projectDescription: z.string().optional().describe('Description of the project'),
@@ -77,6 +78,7 @@ export async function initExistingProject(input: InitExistingProjectInput) {
     description: input.projectDescription,
     tags: input.tags || [],
     isTemplate: false,
+    username: input.username,
   });
 
   if (!project) {
@@ -100,6 +102,7 @@ export async function initExistingProject(input: InitExistingProjectInput) {
           content,
           tags: [],
           changeNote: `Imported from ${customDoc.filePath}`,
+          username: input.username,
         });
         importedDocs.push({ type: customDoc.type, file: customDoc.filePath });
       }
@@ -127,6 +130,7 @@ export async function initExistingProject(input: InitExistingProjectInput) {
             content,
             tags: [],
             changeNote: `Imported from ${fileName}`,
+            username: input.username,
           });
           importedDocs.push({ type: docTypeStr, file: fileName });
           found = true;
@@ -155,6 +159,7 @@ export async function initExistingProject(input: InitExistingProjectInput) {
           content: techstackContent,
           tags: [],
           changeNote: 'Auto-generated from package.json',
+          username: input.username,
         });
         importedDocs.push({ type: 'TECHSTACK', file: 'package.json (auto-generated)' });
       } catch {

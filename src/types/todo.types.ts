@@ -15,6 +15,7 @@ export interface ITodoVersion {
   status: TodoStatus;
   changedAt: Date;
   changeNote?: string;
+  author?: string;
 }
 
 export type CreateTodoInput = {
@@ -27,6 +28,7 @@ export type CreateTodoInput = {
   parentId?: string; // For subtasks
   questionsAnswers?: ITodoQA[];
   changeNote?: string;
+  username?: string;
 };
 
 export type UpdateTodoInput = {
@@ -37,12 +39,14 @@ export type UpdateTodoInput = {
   tags?: string[];
   dueDate?: Date;
   changeNote?: string;
+  username?: string;
 };
 
 export type AddTodoQAInput = {
   question: string;
   answer: string;
   context?: string;
+  username?: string;
 };
 
 export type TodoFilterOptions = {

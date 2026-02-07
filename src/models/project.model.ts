@@ -7,6 +7,8 @@ export interface IProjectDocument extends Document {
   tags: string[];
   metadata: Record<string, unknown>;
   isTemplate: boolean;
+  authors: string[];
+  lastAuthor: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -44,6 +46,14 @@ const ProjectSchema = new Schema<IProjectDocument>(
       type: Boolean,
       default: false,
       index: true,
+    },
+    authors: {
+      type: [String],
+      default: [],
+    },
+    lastAuthor: {
+      type: String,
+      default: '',
     },
   },
   {

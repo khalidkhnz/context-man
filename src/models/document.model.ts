@@ -9,6 +9,8 @@ export interface IProjectDocumentModel extends Document {
   currentVersion: number;
   versions: IDocumentVersion[];
   tags: string[];
+  authors: string[];
+  lastAuthor: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -19,6 +21,7 @@ const DocumentVersionSchema = new Schema<IDocumentVersion>(
     content: { type: String, required: true },
     changedAt: { type: Date, default: Date.now },
     changeNote: { type: String },
+    author: { type: String },
   },
   { _id: false }
 );
@@ -57,6 +60,14 @@ const ProjectDocumentSchema = new Schema<IProjectDocumentModel>(
       type: [String],
       default: [],
       index: true,
+    },
+    authors: {
+      type: [String],
+      default: [],
+    },
+    lastAuthor: {
+      type: String,
+      default: '',
     },
   },
   {

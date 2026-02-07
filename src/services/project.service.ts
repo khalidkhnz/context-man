@@ -20,6 +20,8 @@ export class ProjectService {
       tags: input.tags || [],
       metadata: input.metadata || {},
       isTemplate: input.isTemplate ?? false,
+      authors: input.username ? [input.username] : [],
+      lastAuthor: input.username || '',
     });
 
     return project.save();
@@ -80,6 +82,8 @@ export class ProjectService {
           tags: project.tags,
           metadata: project.metadata,
           isTemplate: project.isTemplate,
+          authors: project.authors || [],
+          lastAuthor: project.lastAuthor || '',
           createdAt: project.createdAt,
           updatedAt: project.updatedAt,
           documentCount,
@@ -170,6 +174,14 @@ export class ProjectService {
       query.isTemplate = isTemplate ? true : { $ne: true };
     }
     return Project.countDocuments(query);
+  }
+
+  async trackAuthor(slug: string, username: string): Promise<void> {
+    if (!username) return;
+    await Project.findOneAndUpdate(
+      { slug: slug.toLowerCase() },
+      { $addToSet: { authors: username }, $set: { lastAuthor: username } }
+    );
   }
 
   async exists(slug: string): Promise<boolean> {

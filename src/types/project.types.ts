@@ -11,6 +11,7 @@ export const CreateProjectSchema = z.object({
   tags: z.array(z.string()).default([]),
   metadata: z.record(z.unknown()).optional(),
   isTemplate: z.boolean().optional().default(false),
+  username: z.string().optional(),
 });
 
 export const UpdateProjectSchema = z.object({
@@ -32,6 +33,8 @@ export interface IProject {
   tags: string[];
   metadata: Record<string, unknown>;
   isTemplate: boolean;
+  authors: string[];
+  lastAuthor: string;
   createdAt: Date;
   updatedAt: Date;
 }

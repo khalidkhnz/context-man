@@ -35,11 +35,24 @@ export class TodoService {
           status: input.status || 'pending',
           changedAt: new Date(),
           changeNote: input.changeNote || 'Initial creation',
+          author: input.username,
         },
       ],
+      authors: input.username ? [input.username] : [],
+      lastAuthor: input.username || '',
     });
 
-    return todo.save();
+    const saved = await todo.save();
+
+    // Track author at project level
+    if (input.username) {
+      await Project.findOneAndUpdate(
+        { _id: project._id },
+        { $addToSet: { authors: input.username }, $set: { lastAuthor: input.username } }
+      );
+    }
+
+    return saved;
   }
 
   async findById(id: string): Promise<ITodoModel | null> {
@@ -128,6 +141,7 @@ export class TodoService {
         status: todo.status,
         changedAt: new Date(),
         changeNote: input.changeNote,
+        author: input.username,
       });
       todo.currentVersion += 1;
     }
@@ -149,7 +163,25 @@ export class TodoService {
       }
     }
 
-    return todo.save();
+    // Track author on todo
+    if (input.username) {
+      if (!todo.authors.includes(input.username)) {
+        todo.authors.push(input.username);
+      }
+      todo.lastAuthor = input.username;
+    }
+
+    const saved = await todo.save();
+
+    // Track author at project level
+    if (input.username) {
+      await Project.findOneAndUpdate(
+        { _id: todo.projectId },
+        { $addToSet: { authors: input.username }, $set: { lastAuthor: input.username } }
+      );
+    }
+
+    return saved;
   }
 
   async markComplete(
@@ -188,7 +220,25 @@ export class TodoService {
       context: qa.context,
     });
 
-    return todo.save();
+    // Track author on todo
+    if (qa.username) {
+      if (!todo.authors.includes(qa.username)) {
+        todo.authors.push(qa.username);
+      }
+      todo.lastAuthor = qa.username;
+    }
+
+    const saved = await todo.save();
+
+    // Track author at project level
+    if (qa.username) {
+      await Project.findOneAndUpdate(
+        { _id: todo.projectId },
+        { $addToSet: { authors: qa.username }, $set: { lastAuthor: qa.username } }
+      );
+    }
+
+    return saved;
   }
 
   async getQAs(id: string): Promise<{ question: string; answer: string; askedAt: Date; context?: string }[] | null> {

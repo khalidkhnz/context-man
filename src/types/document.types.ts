@@ -16,6 +16,7 @@ export interface IDocumentVersion {
   content: string;
   changedAt: Date;
   changeNote?: string;
+  author?: string;
 }
 
 export const CreateDocumentSchema = z.object({
@@ -24,6 +25,7 @@ export const CreateDocumentSchema = z.object({
   content: z.string().min(1),
   tags: z.array(z.string()).default([]),
   changeNote: z.string().optional(),
+  username: z.string().optional(),
 });
 
 export const UpdateDocumentSchema = z.object({
@@ -31,6 +33,7 @@ export const UpdateDocumentSchema = z.object({
   content: z.string().min(1).optional(),
   tags: z.array(z.string()).optional(),
   changeNote: z.string().optional(),
+  username: z.string().optional(),
 });
 
 export type CreateDocumentInput = z.infer<typeof CreateDocumentSchema>;
