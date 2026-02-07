@@ -10,6 +10,7 @@ export const CreateProjectSchema = z.object({
   description: z.string().optional(),
   tags: z.array(z.string()).default([]),
   metadata: z.record(z.unknown()).optional(),
+  isTemplate: z.boolean().optional().default(false),
 });
 
 export const UpdateProjectSchema = z.object({
@@ -17,6 +18,7 @@ export const UpdateProjectSchema = z.object({
   description: z.string().optional(),
   tags: z.array(z.string()).optional(),
   metadata: z.record(z.unknown()).optional(),
+  isTemplate: z.boolean().optional(),
 });
 
 export type CreateProjectInput = z.infer<typeof CreateProjectSchema>;
@@ -29,6 +31,7 @@ export interface IProject {
   description: string;
   tags: string[];
   metadata: Record<string, unknown>;
+  isTemplate: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -38,4 +41,19 @@ export interface ProjectWithCounts extends IProject {
   skillCount: number;
   snippetCount: number;
   promptCount: number;
+  todoStats?: {
+    total: number;
+    pending: number;
+    inProgress: number;
+    completed: number;
+    completionRate: string;
+  };
+  documents?: {
+    PLAN: boolean;
+    SCOPE: boolean;
+    TECHSTACK: boolean;
+    TODO: boolean;
+    CODING_GUIDELINES: boolean;
+    UI_UX_STANDARDS: boolean;
+  };
 }

@@ -70,12 +70,13 @@ export async function initExistingProject(input: InitExistingProjectInput) {
     return { error: `Project path "${input.projectPath}" does not exist` };
   }
 
-  // Create the project
+  // Create the project (user project, not a template)
   const project = await projectService.create({
     slug: input.projectSlug,
     name: input.projectName,
     description: input.projectDescription,
     tags: input.tags || [],
+    isTemplate: false,
   });
 
   if (!project) {

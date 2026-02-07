@@ -21,6 +21,7 @@ export function createListCommand(): Command {
     .option('--language <lang>', 'Filter snippets by language')
     .option('--category <category>', 'Filter prompts by category')
     .option('--tags <tags>', 'Filter by tags (comma-separated)')
+    .option('--templates', 'Show templates instead of user projects')
     .action(async (type: string, projectSlug: string | undefined, options) => {
       try {
         await connectDatabase();
@@ -30,7 +31,7 @@ export function createListCommand(): Command {
 
         switch (type) {
           case 'projects':
-            await listProjects(format, tags);
+            await listProjects(format, tags, !!options.templates);
             break;
           case 'documents':
             if (!projectSlug) {
@@ -73,8 +74,9 @@ export function createListCommand(): Command {
   return cmd;
 }
 
-async function listProjects(format: string, tags?: string[]): Promise<void> {
-  const projects = await projectService.findAllWithCounts({ tags });
+async function listProjects(format: string, tags?: string[], showTemplates?: boolean): Promise<void> {
+  const isTemplate = showTemplates ? true : false;
+  const projects = await projectService.findAllWithCounts({ tags, isTemplate });
 
   if (format === 'json') {
     console.log(formatJson(projects));

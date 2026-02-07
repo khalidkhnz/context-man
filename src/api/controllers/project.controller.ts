@@ -24,9 +24,12 @@ export class ProjectController {
         : undefined;
       const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 50;
       const offset = req.query.offset ? parseInt(req.query.offset as string, 10) : 0;
+      const isTemplate = req.query.isTemplate !== undefined
+        ? req.query.isTemplate === 'true'
+        : undefined;
 
-      const projects = await projectService.findAllWithCounts({ tags, limit, offset });
-      const total = await projectService.count(tags);
+      const projects = await projectService.findAllWithCounts({ tags, limit, offset, isTemplate });
+      const total = await projectService.count(tags, isTemplate);
 
       res.json({
         projects,

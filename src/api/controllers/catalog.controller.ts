@@ -1,15 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import {
-  browseCatalog,
+  listTemplates,
   browseAllSkills,
   getSkillContent,
   getTechstackContent,
 } from '../../mcp/tools/index.js';
 
 /**
- * Browse catalog - list all project templates with filtering
+ * List templates - list all project templates with filtering
  */
-export async function browseCatalogHandler(
+export async function listTemplatesHandler(
   req: Request,
   res: Response,
   next: NextFunction
@@ -18,7 +18,7 @@ export async function browseCatalogHandler(
     const category = (req.query.category as string) || 'all';
     const search = req.query.search as string | undefined;
 
-    const result = await browseCatalog({
+    const result = await listTemplates({
       category: category as 'all' | 'backend' | 'frontend' | 'fullstack' | 'database' | 'devops' | 'mobile',
       search,
     });

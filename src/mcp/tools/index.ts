@@ -20,7 +20,7 @@ export { initProjectFromTechstackTool, initProjectFromTechstack } from './init-p
 export { initExistingProjectTool, initExistingProject } from './init-existing-project.tool.js';
 
 // Catalog browsing tools
-export { browseCatalogTool, browseCatalog } from './browse-catalog.tool.js';
+export { listTemplatesTool, listTemplates } from './browse-catalog.tool.js';
 export { browseAllSkillsTool, browseAllSkills } from './browse-all-skills.tool.js';
 export { getSkillContentTool, getSkillContent } from './get-skill-content.tool.js';
 export { getTechstackContentTool, getTechstackContent } from './get-techstack-content.tool.js';
@@ -42,7 +42,7 @@ export const allTools = [
   'browse_techstacks',
   'init_project_from_techstack',
   'init_existing_project',
-  'browse_catalog',
+  'list_templates',
   'browse_all_skills',
   'get_skill_content',
   'get_techstack_content',

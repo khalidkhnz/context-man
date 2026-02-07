@@ -10,9 +10,10 @@ export const browseTechstacksSchema = z.object({
 export type BrowseTechstacksInput = z.infer<typeof browseTechstacksSchema>;
 
 export async function browseTechstacks(input: BrowseTechstacksInput) {
-  // Get all projects that have a TECHSTACK document
+  // Get template projects that have a TECHSTACK document
   const projects = await projectService.findAll({
     tags: input.tags,
+    isTemplate: true,
   });
 
   const techstacks = [];

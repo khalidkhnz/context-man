@@ -11,7 +11,7 @@ import {
   browseTechstacks,
   initProjectFromTechstack,
   initExistingProject,
-  browseCatalog,
+  listTemplates,
   browseAllSkills,
   getSkillContent,
   getTechstackContent,
@@ -27,7 +27,7 @@ export function createMcpServer(): McpServer {
   // Register list_projects tool
   server.tool(
     'list_projects',
-    'List all available projects in the context management system',
+    'List your projects with progress, todos, and document status. Use list_templates for available project templates.',
     {
       tags: z.array(z.string()).optional().describe('Filter by tags'),
       limit: z.number().default(50).describe('Maximum number of projects to return'),
@@ -699,10 +699,10 @@ export function createMcpServer(): McpServer {
     }
   );
 
-  // Register browse_catalog tool
+  // Register list_templates tool
   server.tool(
-    'browse_catalog',
-    'Browse available project templates and techstacks in the catalog. Use this to show users what templates are available and help them choose.',
+    'list_templates',
+    'List available project templates in the catalog. Use this to show users what templates are available and help them choose.',
     {
       category: z
         .enum(['all', 'backend', 'frontend', 'fullstack', 'database', 'devops', 'mobile'])
@@ -715,7 +715,7 @@ export function createMcpServer(): McpServer {
     },
     async (args) => {
       try {
-        const result = await browseCatalog({
+        const result = await listTemplates({
           category: args.category ?? 'all',
           search: args.search,
         });
@@ -808,7 +808,7 @@ export function createMcpServer(): McpServer {
   // Register get_techstack_content tool
   server.tool(
     'get_techstack_content',
-    'Get the full techstack documentation for a specific project. Use browse_catalog first to see available projects.',
+    'Get the full techstack documentation for a specific project. Use list_templates first to see available projects.',
     {
       projectSlug: z
         .string()

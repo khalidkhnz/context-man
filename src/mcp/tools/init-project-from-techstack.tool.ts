@@ -31,12 +31,13 @@ export async function initProjectFromTechstack(input: InitProjectFromTechstackIn
     return { error: `Project "${input.newProjectSlug}" already exists` };
   }
 
-  // Create the new project
+  // Create the new project (user project, not a template)
   const newProject = await projectService.create({
     slug: input.newProjectSlug,
     name: input.newProjectName,
     description: input.newProjectDescription || `Initialized from ${sourceProject.name}`,
     tags: input.tags || sourceProject.tags,
+    isTemplate: false,
   });
 
   if (!newProject) {

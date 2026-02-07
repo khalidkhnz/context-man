@@ -32,7 +32,7 @@ export async function getTechstackContent(input: GetTechstackContentInput): Prom
   if (!project) {
     return {
       techstack: null,
-      error: `Project "${input.projectSlug}" not found. Use 'browse_catalog' to see available projects.`,
+      error: `Project "${input.projectSlug}" not found. Use 'list_templates' to see available projects.`,
     };
   }
 
@@ -68,7 +68,7 @@ Use this tool to:
 - Display technology choices, configurations, and setup instructions
 - Provide coding guidelines when available
 
-First use 'browse_catalog' to see available projects, then use this tool to get the full techstack content.`,
+First use 'list_templates' to see available projects, then use this tool to get the full techstack content.`,
   inputSchema: {
     type: 'object' as const,
     properties: {

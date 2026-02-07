@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { projectService } from '../../services/index.js';
 
 // Input schema for browsing catalog
-export const BrowseCatalogInputSchema = z.object({
+export const ListTemplatesInputSchema = z.object({
   category: z
     .enum(['all', 'backend', 'frontend', 'fullstack', 'database', 'devops', 'mobile'])
     .optional()
@@ -14,7 +14,7 @@ export const BrowseCatalogInputSchema = z.object({
     .describe('Search term to filter projects by name or tags'),
 });
 
-export type BrowseCatalogInput = z.infer<typeof BrowseCatalogInputSchema>;
+export type ListTemplatesInput = z.infer<typeof ListTemplatesInputSchema>;
 
 interface CatalogProject {
   slug: string;
@@ -50,9 +50,9 @@ function categorizeProject(tags: string[]): string {
   return 'other';
 }
 
-export async function browseCatalog(input: BrowseCatalogInput): Promise<CatalogResult> {
-  // Use findAllWithCounts to get projects with their content counts
-  const projectsWithCounts = await projectService.findAllWithCounts();
+export async function listTemplates(input: ListTemplatesInput): Promise<CatalogResult> {
+  // Use findAllWithCounts to get template projects with their content counts
+  const projectsWithCounts = await projectService.findAllWithCounts({ isTemplate: true });
 
   // Transform to our catalog format
   const projectsWithDetails: CatalogProject[] = projectsWithCounts.map((project) => {
@@ -107,9 +107,9 @@ export async function browseCatalog(input: BrowseCatalogInput): Promise<CatalogR
 }
 
 // Tool definition for MCP
-export const browseCatalogTool = {
-  name: 'browse_catalog',
-  description: `Browse available project templates and techstacks in the catalog.
+export const listTemplatesTool = {
+  name: 'list_templates',
+  description: `List available project templates in the catalog.
 
 Use this tool to:
 - Show users what project templates are available
@@ -117,7 +117,7 @@ Use this tool to:
 - Search for specific technologies or frameworks
 - Help users choose a starting point for their project
 
-Returns a list of projects with their names, descriptions, categories, and tags.`,
+Returns a list of templates with their names, descriptions, categories, and tags.`,
   inputSchema: {
     type: 'object' as const,
     properties: {

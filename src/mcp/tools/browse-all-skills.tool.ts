@@ -53,9 +53,8 @@ function categorizeSkill(tags: string[], name: string): string {
 }
 
 export async function browseAllSkills(input: BrowseAllSkillsInput): Promise<SkillsResult> {
-  // Get skills from a reference project (they're all the same across seeded projects)
-  // First try to get from a seeded project, fall back to listing unique skills
-  const projects = await projectService.findAll();
+  // Get skills from template projects (they're all the same across seeded projects)
+  const projects = await projectService.findAll({ isTemplate: true });
 
   // Use a map to deduplicate skills by name
   const skillsMap = new Map<string, SkillInfo>();

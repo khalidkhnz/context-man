@@ -1,5 +1,6 @@
 import { connectDatabase, disconnectDatabase } from '../config/database.js';
 import { projectService, documentService, skillService } from '../services/index.js';
+import { Project } from '../models/project.model.js';
 import { DocumentType } from '../types/document.types.js';
 import { SkillType } from '../types/skill.types.js';
 
@@ -48,6 +49,7 @@ async function seedProject(techstack: SeedTechstack) {
     name: techstack.name,
     description: techstack.description,
     tags: techstack.tags,
+    isTemplate: true,
   });
 
   if (!project) {
@@ -105,7 +107,7 @@ export async function runSeed() {
 
   await connectDatabase();
 
-  // Collect all techstacks
+  // Collect all techstacks (needed early for migration)
   const allTechstacks: SeedTechstack[] = [
     ...backendTechstacks,
     ...frontendTechstacks,
@@ -122,6 +124,14 @@ export async function runSeed() {
     ...devopsSkills,
     ...generalSkills,
   ];
+
+  // Mark any existing seeded projects as templates (migration for existing data)
+  const allTechstackSlugs = allTechstacks.map(t => t.slug);
+  await Project.updateMany(
+    { slug: { $in: allTechstackSlugs }, isTemplate: { $ne: true } },
+    { $set: { isTemplate: true } }
+  );
+  console.log('  Marked existing seeded projects as templates\n');
 
   console.log('📦 Creating projects with techstacks...\n');
   const createdSlugs: string[] = [];

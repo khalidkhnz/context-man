@@ -6,6 +6,7 @@ export interface IProjectDocument extends Document {
   description: string;
   tags: string[];
   metadata: Record<string, unknown>;
+  isTemplate: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -38,6 +39,11 @@ const ProjectSchema = new Schema<IProjectDocument>(
     metadata: {
       type: Schema.Types.Mixed,
       default: {},
+    },
+    isTemplate: {
+      type: Boolean,
+      default: false,
+      index: true,
     },
   },
   {

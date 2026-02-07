@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  browseCatalogHandler,
+  listTemplatesHandler,
   browseSkillsHandler,
   getSkillContentHandler,
   getTechstackContentHandler,
@@ -15,7 +15,7 @@ const router = Router();
  *   - category: 'all' | 'backend' | 'frontend' | 'fullstack' | 'database' | 'devops' | 'mobile'
  *   - search: string to filter by name, description, or tags
  */
-router.get('/projects', browseCatalogHandler);
+router.get('/projects', listTemplatesHandler);
 
 /**
  * GET /api/catalog/skills

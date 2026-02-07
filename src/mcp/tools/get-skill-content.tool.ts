@@ -32,9 +32,9 @@ interface GetSkillResult {
 export async function getSkillContent(input: GetSkillContentInput): Promise<GetSkillResult> {
   let projectSlug = input.projectSlug;
 
-  // If no project specified, find any project that has this skill
+  // If no project specified, search template projects first for this skill
   if (!projectSlug) {
-    const projects = await projectService.findAll();
+    const projects = await projectService.findAll({ isTemplate: true });
     for (const project of projects) {
       const skill = await skillService.findByProjectAndName(project.slug, input.skillName);
       if (skill) {
